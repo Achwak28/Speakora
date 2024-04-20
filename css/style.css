@@ -12,7 +12,17 @@
   border: none;
   text-decoration: none;
 }
-
+body{
+    background-color: #f5f5f5;
+  
+ 
+ }
+ 
+ section{
+    max-width: 1200px;
+    margin:0 auto;
+    padding:2rem;
+ }
 .container-fluid .logo {
   font-weight: 900 !important;
 }
@@ -29,14 +39,18 @@
   border-color: #7431f9 !important;
   color: white !important;
 }
-
+.posts-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 .post-box {
   display: flex;
   flex-direction: column;
   background-color: var(--light-bg);
   border-radius: 10px;
   padding: 0.8rem 1.2rem;
-  margin: auto;
+  margin:2rem auto;
   width: 80%;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
@@ -168,3 +182,74 @@ header {
     background-color: #F8F9FA !important;
     border: 1px solid var(--main-color) !important;
 }
+
+/* add post page styling */
+.post-editor{
+    background-color: #f5f5f5;
+    padding: 1rem 3rem;
+}
+.post-editor h1{
+    text-align: center;
+    margin: 1rem;
+    color: #34495e;
+}
+.post-editor form{
+    background-color: #fff;
+    border-radius: .5rem;
+    border: 1px solid black;
+    padding:2rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    width: 80%;
+    margin:1rem auto 2rem;
+    padding-top: 1rem;
+ }
+ 
+ .post-editor form p{
+    font-size: 1rem;
+    color:#999;
+    padding-top: 1rem;
+ }
+ 
+ .post-editor form p span{
+    color:#e74c3c;
+ }
+ 
+ .post-editor form .box{
+    width: 100%;
+    margin:1rem 0;
+    border-radius: .5rem;
+    border: 1px solid black;
+    padding:1.4rem;
+    font-size: 1rem;
+    color:black;
+    background-color: #f5f5f5;
+ }
+ 
+ .post-editor form textarea{
+ 
+    resize: none;
+ }
+ 
+ .post-editor form .image{
+    width: 100%;
+   
+    object-fit: contain;
+    margin:1rem 0;
+ }
+ 
+ .publish-btn{
+    background-color: #7431f9;
+    color: white;
+    border-radius: .5rem;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    transition: .25 all ease-out;
+ }
+ .publish-btn input{
+    color: white;
+ }
+    
+ .publish-btn:hover{
+    background-color: #7f3fff;
+ }

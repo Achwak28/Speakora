@@ -98,40 +98,67 @@ if (isset($_SESSION['user_id'])) {
 
             <div class="row g-0 text-center">
                 <div class="col-6 col-md-4">user profile</div>
-                <div class="col-sm-6 col-md-8">
+                <div class="col-sm-6 col-md-8 ">
                     <h1 class="heading py-3">latest posts</h1>
-                    <div class="post-box">
-                        <div class="post-heading">
-                            <div class="post-user-img">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="post-info">
-                                <p class="post-user-name">
-                                    Achouak Cherif
-                                </p>
-                                <p class="post-pub-date">
-                                    2024-04-20
-                                </p>
-                            </div>
-
-                        </div>
-                        <div class="post-image">
-                            <img src="./pic.jpg" alt="post img">
-                        </div>
-                        <div class="icons">
+                    <div class="posts-container ">
+                        <div class="post-box my-2">
+                            <?php
+                            $select_posts = $conn->prepare("SELECT *, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date FROM `posts` LIMIT 6 ");
+                            $select_posts->execute();
+                            if ($select_posts->rowCount() > 0) {
+                                while ($fetch_posts = $select_posts->fetch(PDO::FETCH_ASSOC)) {
+                                    $post_id = $fetch_posts['id'];
 
 
-                            <button type="submit" name="like_post"><i class="fas fa-heart post-icon"></i><span>1</span></button>
-                            <a href=""><i class="fas fa-comment post-icon"></i><span>1</span></a>
+                            ?>
+
+                                    <div class="post-heading">
+
+                                        <div class="post-user-img">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="post-info">
+                                            <p class="post-user-name">
+                                                <?= $fetch_posts['name']; ?>
+                                            </p>
+                                            <p class="post-pub-date">
+                                                <?= $fetch_posts['formatted_date']; ?>
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="post-image">
+                                        <?php
+                                        if ($fetch_posts['image'] != '') {
+                                        ?>
+                                            <img src="uploaded_img/<?= $fetch_posts['image']; ?>" class="post-image" alt="post img">
+                                        <?php
+                                        }
+                                        ?>
+
+                                    </div>
+                                    <div class="icons">
+
+
+                                        <button type="submit" name="like_post"><i class="fas fa-heart post-icon"></i><span>1</span></button>
+                                        <a href=""><i class="fas fa-comment post-icon"></i><span>1</span></a>
+                                    </div>
+                                    <div class="post-caption">
+                                        <p class="post-user-name">
+                                            Achouak Cherif
+                                        </p>
+                                        <p class="caption-text"><?= $fetch_posts['caption']; ?></p>
+                                    </div>
+                                    <a href="" class="view-comments">View all comments</a>
+                            <?php
+                                }
+                            }
+                            ?>
                         </div>
-                        <div class="post-caption">
-                            <p class="post-user-name">
-                                Achouak Cherif
-                            </p>
-                            <p class="caption-text">Good Moring.</p>
-                        </div>
-                        <a href="" class="view-comments">View all comments</a>
                     </div>
+
                 </div>
 
             </div>
