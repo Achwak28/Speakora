@@ -1,50 +1,53 @@
 <?php
 
-include 'connect.php';
+$db_name = 'mysql:host=localhost;dbname=speakora_db';
+$user_name = 'root';
+$user_password = '';
+
+$conn = new PDO($db_name, $user_name, $user_password);
+
 
 session_start();
 
-if(isset($_SESSION['user_id'])){
-   $user_id = $_SESSION['user_id'];
-}else{
-   $user_id = '';
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+} else {
+    $user_id = '';
 };
 
-if(isset($_POST['submit'])){
+if (isset($_POST['submit'])) {
+    echo "user submit";
+    $name = $_POST['name'];
+    $name = filter_var($name, FILTER_SANITIZE_STRING);
+    $email = $_POST['email'];
+    $email = filter_var($email, FILTER_SANITIZE_STRING);
+    $pass = sha1($_POST['pass']);
+    $pass = filter_var($pass, FILTER_SANITIZE_STRING);
+    $cpass = sha1($_POST['cpass']);
+    $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
 
-   $name = $_POST['name'];
-   $name = filter_var($name, FILTER_SANITIZE_STRING);
-   $email = $_POST['email'];
-   $email = filter_var($email, FILTER_SANITIZE_STRING);
-   $pass = sha1($_POST['pass']);
-   $pass = filter_var($pass, FILTER_SANITIZE_STRING);
-   $cpass = sha1($_POST['cpass']);
-   $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
+    $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
+    $select_user->execute([$email]);
+    $row = $select_user->fetch(PDO::FETCH_ASSOC);
 
-   $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
-   $select_user->execute([$email]);
-   $row = $select_user->fetch(PDO::FETCH_ASSOC);
-
-   if($select_user->rowCount() > 0){
-    $message = 'Email already exists!';
-    echo "<script>showErrorMessage('$message');</script>";
-   }else{
-      if($pass != $cpass){
-         $message[] = 'confirm password not matched!';
-         echo "<script>showErrorMessage('$message');</script>";
-      }else{
-         $insert_user = $conn->prepare("INSERT INTO `users`(name, email, password) VALUES(?,?,?)");
-         $insert_user->execute([$name, $email, $cpass]);
-         $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ?");
-         $select_user->execute([$email, $pass]);
-         $row = $select_user->fetch(PDO::FETCH_ASSOC);
-         if($select_user->rowCount() > 0){
-            $_SESSION['user_id'] = $row['id'];
-            header('location:home.php');
-         }
-      }
-   }
-
+    if ($select_user->rowCount() > 0) {
+        $message = 'Email already exists!';
+        echo "<script>showErrorMessage('$message');</script>";
+    } else {
+        if ($pass != $cpass) {
+            $message[] = 'confirm password not matched!';
+        } else {
+            $insert_user = $conn->prepare("INSERT INTO `users`(name, email, password) VALUES(?,?,?)");
+            $insert_user->execute([$name, $email, $cpass]);
+            $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ?");
+            $select_user->execute([$email, $pass]);
+            $row = $select_user->fetch(PDO::FETCH_ASSOC);
+            if ($select_user->rowCount() > 0) {
+                $_SESSION['user_id'] = $row['id'];
+                header('location:home.php');
+            }
+        }
+    }
 }
 
 ?>
@@ -70,14 +73,14 @@ if(isset($_POST['submit'])){
         <div class="flex">
             <nav class="navbar navbar-expand-lg bg-body-tertiary">
                 <div class="container">
-                    <a class="navbar-brand logo" href="#"> <span>Spea</span>Kora</a>
+                    <h1> <a class="navbar-brand logo fw-bolder" href="#"> <span>Spea</span>Kora.</a></h1>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-evenly">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                <a class="nav-link active" aria-current="page" href="home.php">Home</a>
                             </li>
 
                             <form class="d-flex justify-content-center" role="search">
@@ -91,20 +94,36 @@ if(isset($_POST['submit'])){
 
 
                         <div class="d-flex align-items-center">
+                            <?php
+                            $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+                            $select_profile->execute([$user_id]);
+                            if ($select_profile->rowCount() > 0) {
+                                $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
+                            ?>
+                                <div class="nav-item dropdown">
+                                    <a style="color: #7431f9" class="nav-link dropdown-toggle text-capitalize fw-bold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <?= $fetch_profile['name']; ?>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="profile.php">profile</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a href="user_logout.php" onclick="return confirm('logout from this website?');" class="dropdown-item" href="#">logout</a></li>
+                                    </ul>
+                                </div>
+                                <div style="color: #7431f9;" id="user-btn" class="fas fa-user mx-3"></div>
 
-                            <div class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Dropdown
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">profile</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" href="#">logout</a></li>
-                                </ul>
-                            </div>
-                            <div id="user-btn" class="fas fa-user mx-3"></div>
+                            <?php
+                            } else {
+                            ?>
+                                <div id="user-btn" class="fas fa-user mx-3"></div>
+                            <?php
+                            }
+                            ?>
+
+
+
                         </div>
 
 
@@ -120,29 +139,30 @@ if(isset($_POST['submit'])){
         <div class="login-form-container">
 
 
-            <form id="register-form" action="" method="post">
+            <form action="" method="post">
                 <div class="login-title">
                     <h1>REGISTER NOW</h1>
                 </div>
                 <div class="mb-3 ">
                     <label for="exampleInputName" class="form-label">Full Name</label>
-                    <input type="text" name="name" class="form-control" id="exampleInputName">
+                    <input required type="text" name="name" class="form-control" id="exampleInputName">
                 </div>
                 <div class="mb-3 ">
                     <label for="exampleInputEmail1" class="form-label">Email address</label>
-                    <input type="email " name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <input required type="email " name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                 </div>
                 <div class="mb-3 ">
                     <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input type="password" name="pass" class="form-control" id="exampleInputPassword1">
+                    <input required type="password" name="pass" class="form-control" id="exampleInputPassword1">
                 </div>
                 <div class="mb-3 ">
                     <label for="exampleInputPassword2" class="form-label">Confirm password</label>
-                    <input type="password" name="cpass" class="form-control" id="exampleInputPassword2">
+                    <input required type="password" name="cpass" class="form-control" id="exampleInputPassword2">
                 </div>
 
-                <button type="submit" class="btn btn-primary login-btn ">Register Now</button>
+
+                <input type="submit" value="register now" name="submit" class="btn">
                 <div class="go-register form-text-p">
                     already have an account? <a href="login.php" class="alert-link"> <span> login now</span></a>
                 </div>

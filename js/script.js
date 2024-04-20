@@ -34,34 +34,14 @@ userBtn.addEventListener('click', () => {
 });
 
 
-document.addEventListener('DOMContentLoaded', function() {
-   const form = document.querySelector('#register-form');
-
-   form.addEventListener('submit', function(event) {
-       event.preventDefault();
-
-       const nameInput = document.getElementById('exampleInputName');
-       const emailInput = document.getElementById('exampleInputEmail1');
-       const passInput = document.getElementById('exampleInputPassword1');
-       const cpassInput = document.getElementById('exampleInputPassword2');
-       console.log(nameInput)
-
-       // Your form validation and submission logic goes here
-       // For demonstration purposes, let's assume an error occurs
-     /*  const errorMessage = 'Error: Email already exists!';
-       showErrorMessage(errorMessage);*/
-   });
-});
 
 
-// Function to display error message
 function showErrorMessage(message) {
    let errorDiv = document.createElement('div');
    errorDiv.classList.add('alert', 'alert-danger', 'fade', 'show', 'container', 'my-3');
    errorDiv.setAttribute('role', 'alert');
    errorDiv.textContent = message;
 
-   // Insert the error message inside the login-form-container div
    const loginFormContainer = document.querySelector('.login-form-container');
    loginFormContainer.appendChild(errorDiv);
 
