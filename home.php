@@ -10,6 +10,8 @@ if (isset($_SESSION['user_id'])) {
     $user_id = '';
 };
 
+include 'like_post.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,8 +43,8 @@ if (isset($_SESSION['user_id'])) {
                                 <a class="nav-link active" aria-current="page" href="home.php">Home</a>
                             </li>
 
-                            <form class="d-flex justify-content-center" role="search">
-                                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <form action="search.php" method="POST"  class="d-flex justify-content-center" role="search">
+                                <input class="form-control me-2" name="search_box" type="search" placeholder="Search" aria-label="Search">
                                 <button class="btn btn-search btn-outline-success" type="submit">Search</button>
                             </form>
 
@@ -97,20 +99,54 @@ if (isset($_SESSION['user_id'])) {
         <div class="container py-3 pb-5">
 
             <div class="row g-0 text-center">
-                <div class="col-6 col-md-4">user profile</div>
-                <div class="col-sm-6 col-md-8 ">
+                <div class="col-6 col-md-4 col-sm-12 side-user">
+                    <?php
+                    $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+                    $select_profile->execute([$user_id]);
+                    if ($select_profile->rowCount() > 0) {
+                        $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
+                    ?>
+                        <div class="side-user-up">
+                            <div class="side-user-img">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="side-user-info">
+                                <p class="side-user-name text-capitalize fw-bold">
+                                    <?= $fetch_profile['name']; ?>
+                                </p>
+
+                            </div>
+                        </div>
+                        <button class="side-update-profile"><a href="add_post.php">Create Post</a></button>
+                    <?php
+                    } else {
+                    ?>
+                        <button class="side-update-profile"><a href="login.php">Login to create posts!</a></button>
+                    <?php
+                    }
+                    ?>
+                </div>
+                <div class="col-sm-12 col-md-8 ">
                     <h1 class="heading py-3">latest posts</h1>
                     <div class="posts-container ">
-                        <div class="post-box my-2">
-                            <?php
-                            $select_posts = $conn->prepare("SELECT *, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date FROM `posts` LIMIT 6 ");
-                            $select_posts->execute();
-                            if ($select_posts->rowCount() > 0) {
-                                while ($fetch_posts = $select_posts->fetch(PDO::FETCH_ASSOC)) {
-                                    $post_id = $fetch_posts['id'];
+
+                        <?php
+                        $select_posts = $conn->prepare("SELECT *, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date FROM `posts` LIMIT 6 ");
+                        $select_posts->execute();
+                        if ($select_posts->rowCount() > 0) {
+                            while ($fetch_posts = $select_posts->fetch(PDO::FETCH_ASSOC)) {
+                                $post_id = $fetch_posts['id'];
+
+                                $count_post_likes = $conn->prepare("SELECT * FROM `likes` WHERE post_id = ?");
+                                $count_post_likes->execute([$post_id]);
+                                $total_post_likes = $count_post_likes->rowCount();
+
+                                $confirm_likes = $conn->prepare("SELECT * FROM `likes` WHERE user_id = ? AND post_id = ?");
+                                $confirm_likes->execute([$user_id, $post_id]);
 
 
-                            ?>
+                        ?>
+                                <div class="post-box">
 
                                     <div class="post-heading">
 
@@ -132,8 +168,9 @@ if (isset($_SESSION['user_id'])) {
                                     <div class="post-image">
                                         <?php
                                         if ($fetch_posts['image'] != '') {
-                                        ?>
-                                            <img src="uploaded_img/<?= $fetch_posts['image']; ?>" class="post-image" alt="post img">
+                                            
+                                        ?> <a href="post_detail.php?post_id=<?= $post_id; ?>">
+                                                <img src="uploaded_img/<?= $fetch_posts['image']; ?>" class="post-image" alt="post img"></a>
                                         <?php
                                         }
                                         ?>
@@ -142,8 +179,11 @@ if (isset($_SESSION['user_id'])) {
                                     <div class="icons">
 
 
-                                        <button type="submit" name="like_post"><i class="fas fa-heart post-icon"></i><span>1</span></button>
+                                        <button type="submit" name="like_post"><i class="fas fa-heart post-icon" style="<?php if ($confirm_likes->rowCount() > 0) {
+                                                                                                                            echo 'color:var(--red);';
+                                                                                                                        } ?>  "></i><span><?= $total_post_likes; ?></span></button>
                                         <a href=""><i class="fas fa-comment post-icon"></i><span>1</span></a>
+
                                     </div>
                                     <div class="post-caption">
                                         <p class="post-user-name">
@@ -151,17 +191,18 @@ if (isset($_SESSION['user_id'])) {
                                         </p>
                                         <p class="caption-text"><?= $fetch_posts['caption']; ?></p>
                                     </div>
-                                    <a href="" class="view-comments">View all comments</a>
-                            <?php
-                                }
+                                    <a href="post_detail.php" class="view-comments">View all comments</a>
+                                </div>
+                        <?php
                             }
-                            ?>
-                        </div>
+                        }
+                        ?>
                     </div>
-
                 </div>
 
             </div>
+
+        </div>
         </div>
 
     </main>

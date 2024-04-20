@@ -16,7 +16,6 @@ if (isset($_SESSION['user_id'])) {
 };
 
 if (isset($_POST['submit'])) {
-    echo "user submit";
     $name = $_POST['name'];
     $name = filter_var($name, FILTER_SANITIZE_STRING);
     $email = $_POST['email'];
@@ -73,7 +72,7 @@ if (isset($_POST['submit'])) {
         <div class="flex">
             <nav class="navbar navbar-expand-lg bg-body-tertiary">
                 <div class="container">
-                    <h1> <a class="navbar-brand logo fw-bolder" href="#"> <span>Spea</span>Kora.</a></h1>
+                    <h1> <a class="navbar-brand logo fw-bolder" href="home.php"> <span>Spea</span>Kora.</a></h1>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -160,9 +159,9 @@ if (isset($_POST['submit'])) {
                     <label for="exampleInputPassword2" class="form-label">Confirm password</label>
                     <input required type="password" name="cpass" class="form-control" id="exampleInputPassword2">
                 </div>
+ 
+                <button name="submit" type="submit" class="btn btn-primary login-btn ">Regsiter Now</button>
 
-
-                <input type="submit" value="register now" name="submit" class="btn">
                 <div class="go-register form-text-p">
                     already have an account? <a href="login.php" class="alert-link"> <span> login now</span></a>
                 </div>
