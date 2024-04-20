@@ -1,0 +1,170 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap");
+:root {
+  --main-color: #7431f9;
+  --white: #fff;
+  --light-bg: #f8f9fa;
+  --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+* {
+  font-family: "Rubik", sans-serif;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+
+.container-fluid .logo {
+  font-weight: 900 !important;
+}
+
+.container .logo span {
+  color: #7431f9 !important;
+}
+.btn-search {
+  border-color: #7431f9 !important;
+  color: #7431f9 !important;
+}
+.btn-search:hover {
+  background-color: #7431f9 !important;
+  border-color: #7431f9 !important;
+  color: white !important;
+}
+
+.post-box {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--light-bg);
+  border-radius: 10px;
+  padding: 0.8rem 1.2rem;
+  margin: auto;
+  width: 80%;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.post-box .post-heading {
+  display: flex;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.post-box .post-heading .post-user-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 10%;
+  cursor: pointer;
+}
+.post-box .post-heading .post-user-img img {
+  padding: 1rem;
+  width: 80px;
+  height: 80px;
+}
+.post-box .post-heading .post-info {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
+  text-align: left;
+}
+.post-box .post-heading .post-info p {
+  margin: 0;
+  padding: 0;
+}
+.post-box .post-heading .post-info .post-user-name {
+  color: var(--main-color);
+}
+.post-box .post-heading .post-info .post-pub-date {
+  color: rgb(153, 153, 153);
+}
+.post-image {
+  margin-bottom: 0.5rem;
+}
+.post-image img {
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+}
+.icons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: #999999;
+}
+.icons .post-icon {
+  color: #999999;
+}
+.icons button {
+  margin-right: 0.5rem;
+  color: #999999;
+}
+.icons a {
+  color: #999999;
+}
+.post-caption {
+  color: black;
+  font-weight: 500;
+  margin: 0.5rem;
+  text-align: left;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+.post-caption .caption-text {
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+.view-comments {
+  color: black;
+  font-weight: 500;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+}
+
+/* Profile Styling */
+header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+@keyframes fadeIn {
+  0% {
+    transform: translateY(1rem);
+  }
+}
+
+/* Login page styling */
+.login-form-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+.login-form-container form {
+  width: 40%;
+  border: 2px solid var(--main-color);
+  height: fit-content;
+  padding: 2rem 1rem;
+  border-radius: 0.375rem;
+}
+.login-form-container form .login-title {
+  text-align: center;
+}
+
+.login-form-container form .form-text-p {
+
+  display: flex;
+  justify-content: center;
+}
+.login-form-container form .form-text-p span{
+    color: var(--main-color);
+}
+.login-form-container form .login-btn{
+  width: 100% !important;
+  background-color: var(--main-color) !important;
+  border-color: var(--main-color ) !important;
+}
+.login-form-container form input{
+    background-color: #F8F9FA !important;
+    border: 1px solid var(--main-color) !important;
+}
