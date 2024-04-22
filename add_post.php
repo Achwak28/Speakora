@@ -81,7 +81,7 @@ if (isset($_POST['publish'])) {
 <body>
    <?php include 'header.php'; ?>
 
-
+<main class="container-fluid container-md pb-5">
    <section class="post-editor">
 
       <h1 class="heading text-capitalize">Add new post</h1>
@@ -99,7 +99,7 @@ if (isset($_POST['publish'])) {
 
    </section>
 
-
+   </main>
 
 
 

@@ -96,7 +96,7 @@ include 'like_post.php';
         </div>
     </header>
     <main>
-        <div class="container py-3 pb-5">
+        <div class="container-fluid container-md py-3 pb-5">
 
             <div class="row g-0 text-center">
                 <div class="col-6 col-md-4 col-sm-12 side-user">

@@ -113,7 +113,7 @@ if (isset($_POST['submit'])) {
 
         </div>
     </header>
-    <main>
+    <main class="container-fluid container-md pb-5">
         <div class="login-form-container">
 
 

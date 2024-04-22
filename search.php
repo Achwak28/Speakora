@@ -94,7 +94,7 @@ if (isset($_SESSION['user_id'])) {
 
         if ($select_users->rowCount() > 0) {
     ?>
-            <section class="users-container">
+            <section class="users-container class="container-fluid container-md pb-5">
                 <div class="box-container">
                     <?php
                     while ($fetch_users = $select_users->fetch(PDO::FETCH_ASSOC)) {

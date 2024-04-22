@@ -79,7 +79,7 @@ if (isset($_POST['delete_comment'])) {
 
 
     <main>
-        <div class="container py-3 pb-5">
+        <div class="container-fluid container-md py-3 pb-5">
 
             <div class="row g-0 text-center">
 
