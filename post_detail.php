@@ -25,12 +25,11 @@ if (isset($_POST['add_comment'])) {
     $verify_comment->execute([$get_id, $user_id, $user_name, $comment]);
 
     if ($verify_comment->rowCount() > 0) {
-        $message[] = 'comment already added!';
+        $message[] = 'Comment already added!';
     } else {
         $insert_comment = $conn->prepare("INSERT INTO `comments`(post_id, user_id, user_name, comment) VALUES(?,?,?,?)");
         $insert_comment->execute([$get_id, $user_id, $user_name, $comment]);
-        $message[] = 'your comment edited successfully!';
- 
+        $message[] = 'Comment added successfully!';
     }
 }
 
@@ -42,6 +41,22 @@ if (isset($_POST['delete_comment'])) {
     $delete_comment->execute([$delete_comment_id]);
     $message[] = 'comment deleted successfully!';
 }
+
+$select_user_level = $conn->prepare("SELECT level_two FROM `users` WHERE id = ?");
+$select_user_level->execute([$user_id]);
+$fetch_user_level = $select_user_level->fetch(PDO::FETCH_ASSOC);
+$level_two = $fetch_user_level['level_two'];
+
+if (isset($_POST['enable_level_two'])) {
+    $user_id = $_POST['user_id'];
+    $new_level_two = true;
+
+    $update_level_two = $conn->prepare("UPDATE `users` SET level_two = ? WHERE id = ?");
+    $update_level_two->execute([$new_level_two, $user_id]);
+    header("Location: {$_SERVER['PHP_SELF']}?post_id=7");
+    $message[] = 'You have successfully registered as a Level 2 user!';
+}
+
 
 ?>
 
@@ -70,6 +85,18 @@ if (isset($_POST['delete_comment'])) {
 </head>
 
 <body>
+    <?php
+    if (isset($message)) {
+        foreach ($message as $message) {
+            echo '
+      <div class="message">
+         <span>' . $message . '</span>
+         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+      </div>
+      ';
+        }
+    }
+    ?>
     <?php include 'header.php'; ?>
 
 
@@ -88,7 +115,7 @@ if (isset($_POST['delete_comment'])) {
 
 
 
-                    <div class="post-box">
+                    <div style="width:80% !important; margin-right: auto" class="post-box">
 
                         <?php
                         $select_posts = $conn->prepare("SELECT *, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date FROM `posts` WHERE id = ?");
@@ -100,7 +127,7 @@ if (isset($_POST['delete_comment'])) {
 
                                 $count_post_comments = $conn->prepare("SELECT * FROM `comments` WHERE post_id = ?");
                                 $count_post_comments->execute([$post_id]);
-                                $total_post_comments = $count_post_comments->rowCount(); 
+                                $total_post_comments = $count_post_comments->rowCount();
 
 
                                 $count_post_likes = $conn->prepare("SELECT * FROM `likes` WHERE post_id = ?");
@@ -141,136 +168,142 @@ if (isset($_POST['delete_comment'])) {
 
                                 </div>
                                 <div class="icons">
-                                        <?php
-                                        $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
-                                        $select_profile->execute([$user_id]);
-                                        if ($select_profile->rowCount() > 0) {
-                                            $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
-                                        ?>
-                                            <form class="box-form" method="post" style="color: black">
-                                                <input type="hidden" name="post_id" value="<?= $post_id; ?>">
-                                                <button style="color: black" type="submit" name="like_post"><i class="fas fa-heart" style="<?php if ($confirm_likes->rowCount() > 0) {
-                                                                                                                                                echo 'color:var(--red);';
-                                                                                                                                            } ?>  "></i><span><?= $total_post_likes; ?></span></button>
-                                            </form>
-                                        <?php
-                                        } else {
-                                        ?>
+                                    <?php
+                                    $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+                                    $select_profile->execute([$user_id]);
+                                    if ($select_profile->rowCount() > 0) {
+                                        $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
+                                    ?>
+                                        <form class="box-form" method="post" style="color: black">
+                                            <input type="hidden" name="post_id" value="<?= $post_id; ?>">
+                                            <button style="color: black" type="submit" name="like_post"><i class="fas fa-heart" style="<?php if ($confirm_likes->rowCount() > 0) {
+                                                                                                                                            echo 'color:var(--red);';
+                                                                                                                                        } ?>  "></i><span><?= $total_post_likes; ?></span></button>
+                                        </form>
+                                    <?php
+                                    } else {
+                                    ?>
 
-                                            <button class="like-post"><i style="color:black" class="fas fa-heart post-icon"></i><span><?= $total_post_likes; ?></span></button>
-                                        <?php
-                                        }
-                                        ?>
-                                        <a style="text-decoration:none; color: black" href="#"><i class="fas fa-comment post-icon"></i><span><?= $total_post_comments; ?></span></a>
+                                        <button class="like-post"><i style="color:black" class="fas fa-heart post-icon"></i><span><?= $total_post_likes; ?></span></button>
+                                    <?php
+                                    }
+                                    ?>
+                                    <a style="text-decoration:none; color: black" href="#"><i class="fas fa-comment post-icon"></i><span><?= $total_post_comments; ?></span></a>
 
-                                    </div>
-                                
+                                </div>
+
                                 <div class="icons">
-<!--
+                                    <!--
 
                                     <button type="submit" name="like_post"><i class="fas fa-heart post-icon"></i><span><?= $total_post_likes; ?></span></button>
                                     <a style="text-decoration: none;" href="#"><i class="fas fa-comment post-icon"></i><span><?= $total_post_comments; ?></span></a>
 
                                 </div>-->
-                                <div class="post-caption">
-                                    <p class="post-user-name">
-                                        Achouak Cherif
-                                    </p>
-                                    <p class="caption-text">coments</p>
-                                </div>
-                        <?php
+                                    <div class="post-caption">
+                                        <p class="post-user-name">
+                                            <?= $fetch_posts['name']; ?>
+                                        </p>
+                                        <p class="caption-text"><?= $fetch_posts['caption']; ?></p>
+                                    </div>
+                            <?php
                             }
                         } else {
                             echo '<p class="empty">no posts found!</p>';
                         }
-                        ?>
+                            ?>
+                                </div>
+
+
+
                     </div>
-
-
 
                 </div>
 
-            </div>
-
-            <div class="row">
-                <section class="comments-container col-sm-12 col-md-10 m-auto">
-                    <?php
-                    $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
-                    $select_profile->execute([$user_id]);
-                    if ($select_profile->rowCount() > 0) {
-                        $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
-                    ?>
-
-                        <p class="comment-title text-left">add comment</p>
-
-                        <form action="" method="post" class="add-comment">
-
-                            <input type="hidden" name="user_name" value="<?= $fetch_profile['name']; ?>">
-                            <p class="user"><i class="fas fa-user"></i><?= $fetch_profile['name']; ?></p>
-                            <textarea name="comment" maxlength="1000" class="comment-box" cols="30" rows="10" placeholder="write your comment" required></textarea>
-                            <input type="submit" value="add comment" class="inline-btn btn-add-comment" name="add_comment">
-                        </form>
-                    <?php
-                    } else {
-                    ?>
-
-                        <div class="add-comment d-flex flex-column align-items-start ">
-                            <p class="login-comment-text">please login to add your comment</p>
-                            <a href="login.php" class="inline-btn login-add-comment flex-shrink-1">login now</a>
-                        </div>
-                    <?php
-                    }
-                    ?>
-
-
-                    <p class="comment-title">post comments</p>
-                    <div class="user-comments-container">
+                <div class="row m-auto text-left">
+                    <section class="comments-container col-sm-12 col-md-10 m-auto">
                         <?php
-                        $select_comments = $conn->prepare("SELECT * FROM `comments` WHERE post_id = ?");
-                        $select_comments->execute([$get_id]);
-                        if ($select_comments->rowCount() > 0) {
-                            while ($fetch_comments = $select_comments->fetch(PDO::FETCH_ASSOC)) {
+                        $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+                        $select_profile->execute([$user_id]);
+                        if ($select_profile->rowCount() > 0) {
+                            $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
                         ?>
-                                <div class="show-comments" style="<?php if ($fetch_comments['user_id'] == $user_id) {
-                                                                        echo 'order:-1;';
-                                                                    } ?>">
-                                    <div class="comment-user">
-                                        <i class="fas fa-user"></i>
-                                        <div>
-                                            <span><?= $fetch_comments['user_name']; ?></span>
-                                            <div class="text-left"><?= $fetch_comments['date']; ?></div>
-                                        </div>
-                                    </div>
-                                    <div class="comment-box text-left" style="<?php if ($fetch_comments['user_id'] == $user_id) {
-                                                                        echo 'color:var(--white); background:var(--black);';
-                                                                    } ?>"><?= $fetch_comments['comment']; ?></div>
-                                    <?php
-                                    if ($fetch_comments['user_id'] == $user_id) {
-                                    ?>
-                                        <form action="" method="POST">
-                                            <input type="hidden" name="comment_id" value="<?= $fetch_comments['id']; ?>">
-                                            <button type="submit" class="inline-delete-btn login-delete-comment" name="delete_comment" onclick="return confirm('delete this comment?');">delete comment</button>
-                                        </form>
-                                    <?php
-                                    }
-                                    ?>
-                                </div>
+
+                            <p class="comment-title text-left">add comment</p>
+
+                            <form action="" method="post" class="add-comment">
+
+                                <input type="hidden" name="user_name" value="<?= $fetch_profile['name']; ?>">
+                                <p class="user"><i class="fas fa-user"></i><?= $fetch_profile['name']; ?></p>
+                                <textarea name="comment" maxlength="1000" class="comment-box" cols="30" rows="10" placeholder="write your comment" required></textarea>
+                                <input type="submit" value="add comment" class="inline-btn btn-add-comment" name="add_comment">
+                            </form>
                         <?php
-                            }
                         } else {
-                            echo '<p class="empty">no comments added yet!</p>';
+                        ?>
+
+                            <div class="add-comment d-flex flex-column align-items-start ">
+                                <p class="login-comment-text">please login to add your comment</p>
+                                <a href="login.php" class="inline-btn login-add-comment flex-shrink-1">login now</a>
+                            </div>
+                        <?php
                         }
                         ?>
 
-                    </div>
 
-                </section>
+                        <p class="comment-title">post comments</p>
+                        <div class="user-comments-container">
+                            <?php
+                            $select_comments = $conn->prepare("SELECT * FROM `comments` WHERE post_id = ?");
+                            $select_comments->execute([$get_id]);
+                            if ($select_comments->rowCount() > 0) {
+                                while ($fetch_comments = $select_comments->fetch(PDO::FETCH_ASSOC)) {
+                            ?>
+                                    <div class="show-comments" style="<?php if ($fetch_comments['user_id'] == $user_id) {
+                                                                            echo 'order:-1;';
+                                                                        } ?>">
+                                        <div class="comment-user">
+                                            <i class="fas fa-user"></i>
+                                            <div>
+                                                <span><?= $fetch_comments['user_name']; ?></span>
+                                                <div class="text-left"><?= $fetch_comments['date']; ?></div>
+                                            </div>
+                                        </div>
+                                        <div class="comment-box text-left " style="<?php if ($fetch_comments['user_id'] == $user_id) {
+                                                                                        echo 'color:var(--white); background:var(--black);';
+                                                                                    } ?>"><?= $fetch_comments['comment']; ?></div>
+                                        <?php
+                                        if ($fetch_comments['user_id'] == $user_id) {
+                                        ?>
+                                            <form action="" method="POST">
+                                                <input type="hidden" name="comment_id" value="<?= $fetch_comments['id']; ?>">
+
+                                                <?php if ($level_two) : ?>
+                                                    <button type="submit" class="inline-delete-btn disabled login-delete-comment" name="delete_comment" onclick="return confirm('delete this comment?');">delete comment</button>
+                                                <?php else : ?>
+                                                    <input type="hidden" name="user_id" value="<?= $fetch_comments['user_id']; ?>">
+                                                    <button type="submit" class="inline-delete- btn btn-success mt-5 p-4" name="enable_level_two">Enable Delete Comment</button> <?php endif; ?>
+
+                                            </form>
+                                        <?php
+                                        }
+                                        ?>
+                                    </div>
+                            <?php
+                                }
+                            } else {
+                                echo '<p class="empty">no comments added yet!</p>';
+                            }
+                            ?>
+
+                        </div>
+
+                    </section>
+                </div>
+
+
+
+
             </div>
-
-
-
-
-        </div>
 
 
         </div>
@@ -285,7 +318,6 @@ if (isset($_POST['delete_comment'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-
 
 </body>
 

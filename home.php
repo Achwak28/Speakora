@@ -98,8 +98,37 @@ include 'like_post.php';
     <main>
         <div class="container-fluid container-md py-3 pb-5">
 
+            <div class="row mb-3">
+                <div style="height: 300px !important" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    <div class="carousel-inner" style="height: 300px !important">
+                        <div class="carousel-item active">
+                            <img src="./images/slide2.jpg" class="d-block w-100" alt="slide1">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="./images/slide1.jpg" class="d-block w-100" alt="slide2">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="./images/slide3.jpg" class="d-block w-100" alt="slide3">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="row g-0 text-center">
-                <div class="col-6 col-md-4 col-sm-12 side-user">
+                <div class="col-sm-12 col-md-4 col-sm-12 side-user mt-5">
                     <?php
                     $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
                     $select_profile->execute([$user_id]);
@@ -130,7 +159,7 @@ include 'like_post.php';
                     <h1 class="heading py-3">latest posts</h1>
                     <div class="posts-container ">
 
-                        <?php
+                        <?php                                                                      
                         $select_posts = $conn->prepare("SELECT *, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date FROM `posts` LIMIT 6 ");
                         $select_posts->execute();
                         if ($select_posts->rowCount() > 0) {
@@ -208,7 +237,7 @@ include 'like_post.php';
                                     </div>
                                     <div class="post-caption">
                                         <p class="post-user-name">
-                                            Achouak Cherif
+                                        <?= $fetch_posts['name']; ?>
                                         </p>
                                         <p class="caption-text"><?= $fetch_posts['caption']; ?></p>
                                     </div>

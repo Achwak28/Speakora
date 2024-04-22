@@ -47,6 +47,18 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body>
+<?php
+if(isset($message)){
+   foreach($message as $message){
+      echo '
+      <div class="message">
+         <span>'.$message.'</span>
+         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+      </div>
+      ';
+   }
+}
+?>
     <header>
         <div class="flex">
             <nav class="navbar navbar-expand-lg bg-body-tertiary">

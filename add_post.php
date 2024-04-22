@@ -33,7 +33,7 @@ if (isset($_POST['publish'])) {
    if (isset($image)) {
       if ($select_image->rowCount() > 0 and $image != '') {
          $message[] = 'image name repeated!';
-      } elseif ($image_size > 20000000) {
+      } elseif ($image_size > 2000000) {
          $message[] = 'images size is too large!';
       } else {
          move_uploaded_file($image_tmp_name, $image_folder);
@@ -79,6 +79,18 @@ if (isset($_POST['publish'])) {
 </head>
 
 <body>
+<?php
+if(isset($message)){
+   foreach($message as $message){
+      echo '
+      <div class="message">
+         <span>'.$message.'</span>
+         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+      </div>
+      ';
+   }
+}
+?>
    <?php include 'header.php'; ?>
 
    <div class="container-fluid" style=" background-color: #f5f5f5;">

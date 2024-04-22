@@ -68,6 +68,18 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body>
+    <?php
+    if (isset($message)) {
+        foreach ($message as $message) {
+            echo '
+      <div class="message">
+         <span>' . $message . '</span>
+         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+      </div>
+      ';
+        }
+    }
+    ?>
     <header>
         <div class="flex">
             <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -159,7 +171,7 @@ if (isset($_POST['submit'])) {
                     <label for="exampleInputPassword2" class="form-label">Confirm password</label>
                     <input required type="password" name="cpass" class="form-control" id="exampleInputPassword2">
                 </div>
- 
+
                 <button name="submit" type="submit" class="btn btn-primary login-btn ">Regsiter Now</button>
 
                 <div class="go-register form-text-p">
