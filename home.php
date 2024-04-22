@@ -43,7 +43,7 @@ include 'like_post.php';
                                 <a class="nav-link active" aria-current="page" href="home.php">Home</a>
                             </li>
 
-                            <form action="search.php" method="POST"  class="d-flex justify-content-center" role="search">
+                            <form action="search.php" method="POST" class="d-flex justify-content-center" role="search">
                                 <input class="form-control me-2" name="search_box" type="search" placeholder="Search" aria-label="Search">
                                 <button class="btn btn-search btn-outline-success" type="submit">Search</button>
                             </form>
@@ -137,6 +137,10 @@ include 'like_post.php';
                             while ($fetch_posts = $select_posts->fetch(PDO::FETCH_ASSOC)) {
                                 $post_id = $fetch_posts['id'];
 
+                                $count_post_comments = $conn->prepare("SELECT * FROM `comments` WHERE post_id = ?");
+                                $count_post_comments->execute([$post_id]);
+                                $total_post_comments = $count_post_comments->rowCount();
+
                                 $count_post_likes = $conn->prepare("SELECT * FROM `likes` WHERE post_id = ?");
                                 $count_post_likes->execute([$post_id]);
                                 $total_post_likes = $count_post_likes->rowCount();
@@ -147,7 +151,9 @@ include 'like_post.php';
 
                         ?>
                                 <div class="post-box">
+                                    <div class="login-alert">
 
+                                    </div>
                                     <div class="post-heading">
 
                                         <div class="post-user-img">
@@ -168,7 +174,7 @@ include 'like_post.php';
                                     <div class="post-image">
                                         <?php
                                         if ($fetch_posts['image'] != '') {
-                                            
+
                                         ?> <a href="post_detail.php?post_id=<?= $post_id; ?>">
                                                 <img src="uploaded_img/<?= $fetch_posts['image']; ?>" class="post-image" alt="post img"></a>
                                         <?php
@@ -177,12 +183,27 @@ include 'like_post.php';
 
                                     </div>
                                     <div class="icons">
+                                        <?php
+                                        $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+                                        $select_profile->execute([$user_id]);
+                                        if ($select_profile->rowCount() > 0) {
+                                            $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
+                                        ?>
+                                            <form class="box-form" method="post" style="color: black">
+                                                <input type="hidden" name="post_id" value="<?= $post_id; ?>">
+                                                <button style="color: black" type="submit" name="like_post"><i class="fas fa-heart" style="<?php if ($confirm_likes->rowCount() > 0) {
+                                                                                                                                                echo 'color:var(--red);';
+                                                                                                                                            } ?>  "></i><span><?= $total_post_likes; ?></span></button>
+                                            </form>
+                                        <?php
+                                        } else {
+                                        ?>
 
-
-                                        <button type="submit" name="like_post"><i class="fas fa-heart post-icon" style="<?php if ($confirm_likes->rowCount() > 0) {
-                                                                                                                            echo 'color:var(--red);';
-                                                                                                                        } ?>  "></i><span><?= $total_post_likes; ?></span></button>
-                                        <a href=""><i class="fas fa-comment post-icon"></i><span>1</span></a>
+                                            <button class="like-post"><i style="color:black" class="fas fa-heart post-icon"></i><span><?= $total_post_likes; ?></span></button>
+                                        <?php
+                                        }
+                                        ?>
+                                        <a style="text-decoration:none; color: black" href="post_detail.php?post_id=<?= $post_id; ?>"><i class="fas fa-comment post-icon"></i><span><?= $total_post_comments; ?></span></a>
 
                                     </div>
                                     <div class="post-caption">
@@ -191,7 +212,10 @@ include 'like_post.php';
                                         </p>
                                         <p class="caption-text"><?= $fetch_posts['caption']; ?></p>
                                     </div>
-                                    <a href="post_detail.php" class="view-comments">View all comments</a>
+                                    <a href="post_detail.php?post_id=<?= $post_id; ?>" class="view-comments">
+                                        View all comments</a>
+
+
                                 </div>
                         <?php
                             }
