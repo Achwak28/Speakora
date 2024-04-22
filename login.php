@@ -73,8 +73,8 @@ if(isset($message)){
                                 <a class="nav-link active" aria-current="page" href="home.php">Home</a>
                             </li>
 
-                            <form class="d-flex justify-content-center" role="search">
-                                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <form action="search.php" method="POST" class="d-flex justify-content-center" role="search">
+                                <input class="form-control me-2" name="search_box" type="search" placeholder="Search" aria-label="Search">
                                 <button class="btn btn-search btn-outline-success" type="submit">Search</button>
                             </form>
 

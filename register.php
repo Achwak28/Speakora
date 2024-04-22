@@ -24,7 +24,7 @@ if (isset($_POST['submit'])) {
     $pass = filter_var($pass, FILTER_SANITIZE_STRING);
     $cpass = sha1($_POST['cpass']);
     $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
-
+  
     $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
     $select_user->execute([$email]);
     $row = $select_user->fetch(PDO::FETCH_ASSOC);
@@ -94,8 +94,8 @@ if (isset($_POST['submit'])) {
                                 <a class="nav-link active" aria-current="page" href="home.php">Home</a>
                             </li>
 
-                            <form class="d-flex justify-content-center" role="search">
-                                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <form action="search.php" method="POST" class="d-flex justify-content-center" role="search">
+                                <input class="form-control me-2" name="search_box" type="search" placeholder="Search" aria-label="Search">
                                 <button class="btn btn-search btn-outline-success" type="submit">Search</button>
                             </form>
 

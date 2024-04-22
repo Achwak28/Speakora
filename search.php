@@ -3,11 +3,12 @@ include 'connect.php';
 
 session_start();
 
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
+if (!isset($_SESSION['user_id'])) {
+    header('location: home.php');
+    exit(); // Stop executing further code
 }
+
+$user_id = $_SESSION['user_id'];
 
 ?>
 
@@ -84,47 +85,39 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </header>
 
-    <?php
-    if (isset($_POST['search_box'])) {
-        // Search for users based on the entered name
-        $search_box = $_POST['search_box'];
-        $search_box = '%' . $search_box . '%';
-        $select_users = $conn->prepare("SELECT * FROM `users` WHERE name LIKE ?");
-        $select_users->execute([$search_box]);
+    <section class="users-container container-fluid container-md pb-5">
+        <div class="box-container">
+            <?php 
+            if (isset($_POST['search_box'])) {
+                // Search for users based on the entered name
+                $search_box = '%' . $_POST['search_box'] . '%';
+                $select_users = $conn->prepare("SELECT * FROM `users` WHERE name LIKE ?");
+                $select_users->execute([$search_box]);
 
-        if ($select_users->rowCount() > 0) {
-    ?>
-            <section class="users-container class="container-fluid container-md pb-5">
-                <div class="box-container">
-                    <?php
+                if ($select_users->rowCount() > 0) {
                     while ($fetch_users = $select_users->fetch(PDO::FETCH_ASSOC)) {
                     ?>
-
                         <div class="user-profil-container">
                             <div class="profile-user-pic">
-
                                 <i class="fas fa-user"></i>
-
                             </div>
                             <div class="profile-user-detail d-flex flex-column text-md-end">
                                 <p class="fs-3 fw-bolder"><?= $fetch_users['name']; ?></p>
                                 <p class="fs-4 text-dark-emphasis"><?= $fetch_users['email']; ?></p>
+                                <a href="view_profile.php?user_id=<?= $fetch_users['id']; ?>" class="btn btn-primary">View Profile</a>
                             </div>
                         </div>
-                     
                     <?php
                     }
-                    ?>
-                </div>
-            </section>
-    <?php
-        } else {
-            echo '<section><p class="empty">No users found!</p></section>';
-        }
-    } else {
-        echo '<section><p class="empty">Enter a name to search for users!</p></section>';
-    }
-    ?>
+                } else {
+                    echo '<p class="empty">No users found!</p>';
+                }
+            } else {
+                echo '<p class="empty">Enter a name to search for users!</p>';
+            }
+            ?>
+        </div>
+    </section>
 
     <script src="js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

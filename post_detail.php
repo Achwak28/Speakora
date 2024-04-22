@@ -42,12 +42,13 @@ if (isset($_POST['delete_comment'])) {
     $message[] = 'comment deleted successfully!';
 }
 
-$select_user_level = $conn->prepare("SELECT level_two FROM `users` WHERE id = ?");
-$select_user_level->execute([$user_id]);
-$fetch_user_level = $select_user_level->fetch(PDO::FETCH_ASSOC);
-$level_two = $fetch_user_level['level_two'];
+
 
 if (isset($_POST['enable_level_two'])) {
+    $select_user_level = $conn->prepare("SELECT level_two FROM `users` WHERE id = ?");
+    $select_user_level->execute([$user_id]);
+    $fetch_user_level = $select_user_level->fetch(PDO::FETCH_ASSOC);
+    $level_two = $fetch_user_level['level_two'];
     $user_id = $_POST['user_id'];
     $new_level_two = true;
 
